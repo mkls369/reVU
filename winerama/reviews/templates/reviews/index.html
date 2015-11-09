@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+
+    <head>
+        <title>Rango</title>
+        <script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+    </head>
+
+    <body>
+        <h1>Rango says...</h1>
+        hello world! <strong>{{ boldmessage }}</strong><br />
+        <a href="/rango/about/">About</a><br />
+    </body>
+
+
+{% load staticfiles %}
+
+<img src="{% static "images/rango.jpg" %}" alt="Picture of Rango" /> <!-- New line -->
+
+
+<script src="{% static "js/rango-jquery.js" %}"></script>
+
+<button onClick="alert('You clicked the button using Javascript.');">
+       Click Me - I run Javascript
+</button>
+
+<button id="about-btn"> Click Me - I'm Javascript on Speed</button>
+
+
+
+</html>
