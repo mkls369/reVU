@@ -43,5 +43,5 @@ class Star(models.Model):
 
     wine = models.ForeignKey(Wine)
     #pub_date = models.DateTimeField('date published')
-    user_name = models.ForeignKey(User)
-    rating = models.IntegerField(validators=[MinValueValidator(1), MaxValueValidator(5)])
+    user_name = models.CharField(max_length=100)
+    rating = models.IntegerField(validators=[MinValueValidator(1), MaxValueValidator(10)])

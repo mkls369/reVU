@@ -1,5 +1,5 @@
 from django.forms import ModelForm, Textarea
-from reviews.models import Review
+from .models import Review, Star
 
 
 class ReviewForm(ModelForm):
@@ -7,10 +7,10 @@ class ReviewForm(ModelForm):
         model = Review
         fields = ['rating', 'comment']
         widgets = {
-            'comment': Textarea(attrs={'cols': 40, 'rows': 15}),
+            'comment': Textarea(attrs={'cols': 40, 'rows': 3}),
         }
 
-class ReviewFormStar(ModelForm):
+class FormStar(ModelForm):
     class Meta:
-        model = Review
+        model = Star
         fields = ['rating']

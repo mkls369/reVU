@@ -3,7 +3,7 @@ from django.http import HttpResponseRedirect
 from django.core.urlresolvers import reverse
 from django.contrib.auth.models import User
 from .models import Review, Wine, Cluster, Star
-from .forms import ReviewForm, ReviewFormStar
+from .forms import ReviewForm, FormStar
 from .suggestions import update_clusters
 
 import datetime
@@ -32,29 +32,6 @@ def wine_detail(request, wine_id):
     form = ReviewForm()
     return render(request, 'reviews/wine_detail.html', {'wine': wine, 'form': form})
 
-@login_required
-def add_review(request, wine_id):
-    wine = get_object_or_404(Wine, pk=wine_id)
-    form = ReviewForm(request.POST)
-    if form.is_valid():
-        rating = form.cleaned_data['rating']
-        comment = form.cleaned_data['comment']
-        user_name = request.user.username
-        review = Review()
-        review.wine = wine
-        review.user_name = user_name
-        review.rating = rating
-        review.comment = comment
-        review.pub_date = datetime.datetime.now()
-        review.save()
-        update_clusters()
-        # Always return an HttpResponseRedirect after successfully dealing
-        # with POST data. This prevents data from being posted twice if a
-        # user hits the Back button.
-        return HttpResponseRedirect(reverse('reviews:wine_detail', args=(wine.id,)))
-    
-    return render(request, 'reviews/wine_detail.html', {'wine': wine, 'form': form})
-    
 
 def user_review_list(request, username=None):
     if not username:
@@ -181,9 +158,33 @@ def give_new_rating(request):
     return HttpResponse(likes)
 
 @login_required
+def add_review(request, wine_id):
+    wine = get_object_or_404(Wine, pk=wine_id)
+    form = ReviewForm(request.POST)
+    if form.is_valid():
+        rating = form.cleaned_data['rating']
+        comment = form.cleaned_data['comment']
+        user_name = request.user.username
+        review = Review()
+        review.wine = wine
+        review.user_name = user_name
+        review.rating = rating
+        review.comment = comment
+        review.pub_date = datetime.datetime.now()
+        review.save()
+        update_clusters()
+        # Always return an HttpResponseRedirect after successfully dealing
+        # with POST data. This prevents data from being posted twice if a
+        # user hits the Back button.
+        return HttpResponseRedirect(reverse('reviews:wine_detail', args=(wine.id,)))
+
+    return render(request, 'reviews/wine_detail.html', {'wine': wine, 'form': form})
+
+
+@login_required
 def add_star(request, wine_id):
     wine = get_object_or_404(Wine, pk=wine_id)
-    form = ReviewFormStar(request.POST)
+    form = FormStar(request.POST)
     if form.is_valid():
         rating = form.cleaned_data['rating']
 
@@ -199,3 +200,5 @@ def add_star(request, wine_id):
         # with POST data. This prevents data from being posted twice if a
         # user hits the Back button.
         return HttpResponseRedirect(reverse('reviews:wine_detail', args=(wine.id,)))
+
+    return render(request, 'reviews/wine_detail.html', {'wine': wine, 'form': form})
