@@ -21,5 +21,6 @@ urlpatterns = [
     url(r'^admin/', include(admin.site.urls)),
     url(r'^accounts/', include('registration.backends.simple.urls')),
     url(r'^accounts/', include('django.contrib.auth.urls', namespace="auth")),
+    url(r'^ratings/', include('star_ratings.urls', namespace='ratings', app_name='ratings')),
     
 ]
