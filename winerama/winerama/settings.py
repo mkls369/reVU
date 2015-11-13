@@ -23,6 +23,10 @@ PROJECT_DIR=os.path.dirname(__file__)
 TEMPLATE_PATH = os.path.join(PROJECT_PATH, 'templates')
 STATIC_PATH = os.path.join(PROJECT_PATH, 'static')
 
+STATIC_ROOT= os.path.join(PROJECT_PATH, 'static')
+
+MEDIA_ROOT = os.path.join(PROJECT_PATH, 'media')
+
 STATICFILES_DIRS = (
     STATIC_PATH,
 )
