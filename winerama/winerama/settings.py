@@ -23,6 +23,10 @@ PROJECT_DIR=os.path.dirname(__file__)
 TEMPLATE_PATH = os.path.join(PROJECT_PATH, 'templates')
 STATIC_PATH = os.path.join(PROJECT_PATH, 'static')
 
+STATIC_ROOT= '/home/xerlivex/reVU/static'
+
+MEDIA_ROOT = os.path.join(PROJECT_PATH, 'media')
+
 STATICFILES_DIRS = (
     STATIC_PATH,
 )
@@ -130,6 +134,7 @@ TEMPLATE_CONTEXT_PROCESSORS ={
 
 STATIC_URL = '/static/'
 
+print "Base directory:", BASE_DIR
 print "Settings directory:", SETTINGS_DIR
 print "Project root:", PROJECT_PATH
 print "Templates:", TEMPLATE_PATH

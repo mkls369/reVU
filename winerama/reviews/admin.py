@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from .models import Wine, Review, Cluster, Star
+from .models import Wine, Review, Cluster
 
 class ReviewAdmin(admin.ModelAdmin):
     model = Review
@@ -15,7 +15,7 @@ class ClusterAdmin(admin.ModelAdmin):
 
     
 admin.site.register(Wine)
-admin.site.register(Star)
+
 
 admin.site.register(Review, ReviewAdmin)
 admin.site.register(Cluster, ClusterAdmin)
