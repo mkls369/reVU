@@ -23,7 +23,7 @@ urlpatterns = [
 
     url(r'^index/$', views.index, name='index'),
 
-    url(r'^give_rating/$', views.give_rating, name='give_rating'),
+    # url(r'^give_rating/$', views.give_rating, name='give_rating'),
 
-     url(r'^wine/(?P<wine_id>[0-9]+)/add_star/$', views.add_star, name='add_star'),
+     # url(r'^wine/(?P<wine_id>[0-9]+)/add_star/$', views.add_star, name='add_star'),
 ]

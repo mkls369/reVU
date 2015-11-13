@@ -37,11 +37,3 @@ class Cluster(models.Model):
 
     def get_members(self):
         return "\n".join([u.username for u in self.users.all()])
-
-
-class Star(models.Model):
-
-    wine = models.ForeignKey(Wine)
-    #pub_date = models.DateTimeField('date published')
-    user_name = models.CharField(max_length=100)
-    rating = models.IntegerField(validators=[MinValueValidator(1), MaxValueValidator(10)])

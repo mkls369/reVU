@@ -2,8 +2,8 @@ from django.shortcuts import get_object_or_404, render
 from django.http import HttpResponseRedirect
 from django.core.urlresolvers import reverse
 from django.contrib.auth.models import User
-from .models import Review, Wine, Cluster, Star
-from .forms import ReviewForm, FormStar
+from .models import Review, Wine, Cluster
+from .forms import ReviewForm
 from .suggestions import update_clusters
 
 import datetime
@@ -112,50 +112,27 @@ def index(request):
 
     return render(request, 'reviews/index.html', context_dict)
 
-@login_required
-def give_rating(request):
-    #context = RequestContext(request)
-    cat_id = None
-    if request.method == 'GET':
-        cat_id = request.GET['wine_id']
-
-    likes = 0
-    if cat_id:
-        wine = Wine.objects.get(id=int(cat_id))
-        star = Star.objects.get(id=2)
-        if wine:
-            likes = wine.likes + 2
-            wine.likes = likes
-            wine.save()
-
-        if star:
-            star.rating = 3
-            star.save()
-
-    return HttpResponse(likes)
-
-@login_required
-def give_new_rating(request):
-    #context = RequestContext(request)
-    cat_id = None
-    if request.method == 'GET':
-        cat_id = request.GET['wine_id']
-
-    likes = 0
-    if cat_id:
-        wine = Wine.objects.get(id=int(cat_id))
-        star = Star.objects.get(id=2)
-
-        if wine:
-            likes = wine.likes + 2
-            wine.likes = likes
-            wine.save()
-
-        if star:
-            star.rating = 3
-            star.save()
-
-    return HttpResponse(likes)
+# @login_required
+# def give_rating(request):
+#     #context = RequestContext(request)
+#     cat_id = None
+#     if request.method == 'GET':
+#         cat_id = request.GET['wine_id']
+#
+#     likes = 0
+#     if cat_id:
+#         wine = Wine.objects.get(id=int(cat_id))
+#         star = Star.objects.get(id=2)
+#         if wine:
+#             likes = wine.likes + 2
+#             wine.likes = likes
+#             wine.save()
+#
+#         if star:
+#             star.rating = 3
+#             star.save()
+#
+#     return HttpResponse(likes)
 
 @login_required
 def add_review(request, wine_id):
@@ -172,29 +149,6 @@ def add_review(request, wine_id):
         review.comment = comment
         review.pub_date = datetime.datetime.now()
         review.save()
-        update_clusters()
-        # Always return an HttpResponseRedirect after successfully dealing
-        # with POST data. This prevents data from being posted twice if a
-        # user hits the Back button.
-        return HttpResponseRedirect(reverse('reviews:wine_detail', args=(wine.id,)))
-
-    return render(request, 'reviews/wine_detail.html', {'wine': wine, 'form': form})
-
-
-@login_required
-def add_star(request, wine_id):
-    wine = get_object_or_404(Wine, pk=wine_id)
-    form = FormStar(request.POST)
-    if form.is_valid():
-        rating = form.cleaned_data['rating']
-
-        user_name = request.user.username
-        star = Star()
-        star.wine = wine
-        star.user_name = user_name
-        star.rating = rating
-
-        star.save()
         update_clusters()
         # Always return an HttpResponseRedirect after successfully dealing
         # with POST data. This prevents data from being posted twice if a
