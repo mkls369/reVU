@@ -2,9 +2,11 @@ from django.shortcuts import get_object_or_404, render
 from django.http import HttpResponseRedirect
 from django.core.urlresolvers import reverse
 from django.contrib.auth.models import User
-from .models import Review, Wine, Cluster
+from .models import Review, Wine, Cluster, Rating
 from .forms import ReviewForm
 from .suggestions import update_clusters
+from django.template import RequestContext
+
 
 import datetime
 
@@ -82,35 +84,6 @@ def user_recommendation_list(request):
         {'username': request.user.username,'wine_list': wine_list}
     )
 
-@login_required
-def like_category(request):
-    #context = RequestContext(request)
-    cat_id = None
-    if request.method == 'GET':
-        cat_id = request.GET['wine_id']
-
-    likes = 0
-    if cat_id:
-        wine = Wine.objects.get(id=int(cat_id))
-        if wine:
-            likes = wine.likes + 1
-            wine.likes = likes
-            wine.save()
-
-    return HttpResponse(likes)
-
-from django.http import HttpResponse
-def index(request):
-
-    # Construct a dictionary to pass to the template engine as its context.
-    # Note the key boldmessage is the same as {{ boldmessage }} in the template!
-    context_dict = {'boldmessage': "I am bold font from the context"}
-
-    # Return a rendered response to send to the client.
-    # We make use of the shortcut function to make our lives easier.
-    # Note that the first parameter is the template we wish to use.
-
-    return render(request, 'reviews/index.html', context_dict)
 
 # @login_required
 # def give_rating(request):
@@ -156,3 +129,27 @@ def add_review(request, wine_id):
         return HttpResponseRedirect(reverse('reviews:wine_detail', args=(wine.id,)))
 
     return render(request, 'reviews/wine_detail.html', {'wine': wine, 'form': form})
+
+def best_wines():
+
+    best_w = []
+    best_w = Wine.objects.filter(ratings__isnull=False).order_by('ratings__average')
+
+    return best_w
+
+
+def index(request):
+    # context = RequestContext(request)
+    # Construct a dictionary to pass to the template engine as its context.
+    # Note the key boldmessage is the same as {{ boldmessage }} in the template!
+
+    best_w = best_wines()
+
+    #context_dict = {'boldmessage': "I am bold font from the context"}
+    context_dict = {'wines': best_w}
+
+    # Return a rendered response to send to the client.
+    # We make use of the shortcut function to make our lives easier.
+    # Note that the first parameter is the template we wish to use.
+
+    return render(request, 'reviews/index.html', context_dict)

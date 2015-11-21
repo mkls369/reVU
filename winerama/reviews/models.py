@@ -2,19 +2,19 @@ from django.db import models
 from django.contrib.auth.models import User
 from django.core.validators import MinValueValidator, MaxValueValidator
 import numpy as np
-
+from star_ratings.models import Rating
+from django.contrib.contenttypes.fields import GenericRelation
 
 class Wine(models.Model):
     name = models.CharField(max_length=200)
-    likes = models.IntegerField(default=0)
-    
+    ratings = GenericRelation(Rating, related_query_name="wine")
+
     def average_rating(self):
         all_ratings = map(lambda x: x.rating, self.review_set.all())
         return np.mean(all_ratings)
-        
+
     def __unicode__(self):
         return self.name
-
 
 class Review(models.Model):
     RATING_CHOICES = (

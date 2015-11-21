@@ -7,7 +7,10 @@
 
 {% block title %}
 <h2>{{ wine.name }}</h2>
-<h5>{{ wine.review_set.count }} reviews ({{ wine.average_rating | floatformat }} average rating)</h5>
+<h5>{{ wine.review_set.count }} reviews ( {{ wine.average_rating | floatformat }} average rating)</h5>
+
+<h5>{{ wine.b_star.count }} reviews ({{ wine.average_rating | floatformat }} average rating)</h5>
+
 {% endblock %}
 
 {% block content %}
@@ -32,7 +35,11 @@
 
 
     <div>
+
 {% ratings wine %}
+
+
+
     </div>
 
 

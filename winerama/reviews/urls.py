@@ -19,11 +19,9 @@ urlpatterns = [
     # ex: /recommendation - get wine recommendations for the logged user
     url(r'^recommendation/$', views.user_recommendation_list, name='user_recommendation_list'),
 
-    url(r'^like_category/$', views.like_category, name='like_category'),
-
     url(r'^index/$', views.index, name='index'),
 
-    # url(r'^give_rating/$', views.give_rating, name='give_rating'),
+    # url(r'^best_wine/$', views.best_wines, name = 'best_wines'),
 
      # url(r'^wine/(?P<wine_id>[0-9]+)/add_star/$', views.add_star, name='add_star'),
 ]

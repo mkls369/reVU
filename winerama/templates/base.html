@@ -22,6 +22,7 @@
             {% if user.is_authenticated %}
                 <li><a href="{% url 'reviews:user_review_list' user.username %}">Hello {{ user.username }}</a></li>
                 <li><a href="{% url 'reviews:user_recommendation_list' %}">
+                    <span class="glyphicon glyphicon-certificate"></span>
                     Subject recommendations</a></li>
                 <li><a href="{% url 'auth:logout' %}"><span class="glyphicon glyphicon-log-out"></span> Logout</a></li>
                 {% else %}

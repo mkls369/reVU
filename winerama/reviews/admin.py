@@ -15,7 +15,5 @@ class ClusterAdmin(admin.ModelAdmin):
 
     
 admin.site.register(Wine)
-
-
 admin.site.register(Review, ReviewAdmin)
 admin.site.register(Cluster, ClusterAdmin)
