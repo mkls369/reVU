@@ -133,10 +133,10 @@ def add_review(request, wine_id):
 def best_wines():
 
     best_w = []
-    best_w = Wine.objects.filter(ratings__isnull=False).order_by('ratings__average')
+    best_w = Wine.objects.filter(ratings__isnull=False).order_by('-ratings__average')
+    #best_w = Wine.ratings.get('total')
 
     return best_w
-
 
 def index(request):
     # context = RequestContext(request)

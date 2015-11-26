@@ -9,7 +9,7 @@
 <h2>{{ wine.name }}</h2>
 <h5>{{ wine.review_set.count }} reviews ( {{ wine.average_rating | floatformat }} average rating)</h5>
 
-<h5>{{ wine.b_star.count }} reviews ({{ wine.average_rating | floatformat }} average rating)</h5>
+<h5>  {{ wine.get_average }} total star points
 
 {% endblock %}
 

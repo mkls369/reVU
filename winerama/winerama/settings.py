@@ -128,6 +128,7 @@ TEMPLATE_CONTEXT_PROCESSORS ={
 "django.template.context_processors.tz",
 "django.contrib.messages.context_processors.messages",
     'django.core.context_processors.request',
+
 }
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.8/howto/static-files/

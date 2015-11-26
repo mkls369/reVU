@@ -7,9 +7,8 @@
     </head>
 
     <body>
-        <h1>Rango says...</h1>
-        hello world! <strong>{{ boldmessage }}</strong><br />
-        <a href="/rango/about/">About</a><br />
+        <h1>Test page</h1> <strong> {{ boldmessage }}</strong><br />
+        <a href="/reviews/">To main page</a><br />
     </body>
 
 
@@ -17,8 +16,14 @@
     {% load ratings %}
 
      {% for wine in wines %}
-    <li>{{ wine }} </li>
+
+    <li> {{ wine.name }} {{ wine.get_average }} </li>
+
     {% endfor %}
+
+
+    <!--<li>{{ wines }}</li>-->
+
 
 <script src="{% static "js/rango-jquery.js" %}"></script>
 

@@ -7,7 +7,8 @@ from django.contrib.contenttypes.fields import GenericRelation
 
 class Wine(models.Model):
     name = models.CharField(max_length=200)
-    ratings = GenericRelation(Rating, related_query_name="wine")
+    ratings = GenericRelation(Rating, related_query_name="wines")
+
 
     def average_rating(self):
         all_ratings = map(lambda x: x.rating, self.review_set.all())
@@ -15,6 +16,15 @@ class Wine(models.Model):
 
     def __unicode__(self):
         return self.name
+
+    def get_average(self):
+        rat = Rating.objects.get(wines = self.id).average
+        return rat
+
+    def sort_by_rating(self):
+        ratt = Wine.objects.filter(ratings__isnull=False).order_by('ratings__average')
+        return ratt
+
 
 class Review(models.Model):
     RATING_CHOICES = (
