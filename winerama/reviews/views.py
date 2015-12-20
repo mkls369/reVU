@@ -84,29 +84,6 @@ def user_recommendation_list(request):
         {'username': request.user.username,'wine_list': wine_list}
     )
 
-
-# @login_required
-# def give_rating(request):
-#     #context = RequestContext(request)
-#     cat_id = None
-#     if request.method == 'GET':
-#         cat_id = request.GET['wine_id']
-#
-#     likes = 0
-#     if cat_id:
-#         wine = Wine.objects.get(id=int(cat_id))
-#         star = Star.objects.get(id=2)
-#         if wine:
-#             likes = wine.likes + 2
-#             wine.likes = likes
-#             wine.save()
-#
-#         if star:
-#             star.rating = 3
-#             star.save()
-#
-#     return HttpResponse(likes)
-
 @login_required
 def add_review(request, wine_id):
     wine = get_object_or_404(Wine, pk=wine_id)

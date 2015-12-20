@@ -1,8 +1,10 @@
-from .models import Review, Wine, Cluster
+from .models import Review, Wine, Cluster, UserRating
 from django.contrib.auth.models import User
 from sklearn.cluster import KMeans
 from scipy.sparse import dok_matrix, csr_matrix
 import numpy as np
+import pandas as pd
+from scipy.spatial.distance import cosine
 
 def update_clusters():
     num_reviews = Review.objects.count()
@@ -30,3 +32,4 @@ def update_clusters():
             cluster.save()
         for i,cluster_label in enumerate(clustering.labels_):
             new_clusters[cluster_label].users.add(User.objects.get(username=all_user_names[i]))
+

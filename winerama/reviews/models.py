@@ -2,7 +2,7 @@ from django.db import models
 from django.contrib.auth.models import User
 from django.core.validators import MinValueValidator, MaxValueValidator
 import numpy as np
-from star_ratings.models import Rating
+from star_ratings.models import Rating, UserRating
 from django.contrib.contenttypes.fields import GenericRelation
 
 class Wine(models.Model):
