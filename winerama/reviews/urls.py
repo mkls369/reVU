@@ -20,7 +20,7 @@ urlpatterns = [
     url(r'^recommendation/$', views.user_recommendation_list, name='user_recommendation_list'),
 
     url(r'^index/$', views.index, name='index'),
-
+    url(r'^index2/$', views.recs_for_user, name='index2'),
     # url(r'^best_wine/$', views.best_wines, name = 'best_wines'),
 
      # url(r'^wine/(?P<wine_id>[0-9]+)/add_star/$', views.add_star, name='add_star'),

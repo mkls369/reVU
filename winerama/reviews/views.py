@@ -2,7 +2,7 @@ from django.shortcuts import get_object_or_404, render
 from django.http import HttpResponseRedirect
 from django.core.urlresolvers import reverse
 from django.contrib.auth.models import User
-from .models import Review, Wine, Cluster, Rating
+from .models import Review, Wine, Cluster, Rating,Recommendation
 from .forms import ReviewForm
 from .suggestions import update_clusters
 from django.template import RequestContext
@@ -130,3 +130,13 @@ def index(request):
     # Note that the first parameter is the template we wish to use.
 
     return render(request, 'reviews/index.html', context_dict)
+
+def recs_for_user(request):
+
+    entry_list = Recommendation.objects.get(user=request.user.id)
+
+    #recommended_wines = entry_list.get_wine_list()
+
+    context_dict = {'recommended_wines': entry_list}
+
+    return render(request, 'reviews/index2.html', context_dict)

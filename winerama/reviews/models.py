@@ -47,3 +47,19 @@ class Cluster(models.Model):
 
     def get_members(self):
         return "\n".join([u.username for u in self.users.all()])
+
+class Recommendation(models.Model):
+    name = models.CharField(max_length=100, null=True)
+    wines = models.ManyToManyField(Wine)
+    user = models.ForeignKey(User, null = True, related_query_name="recs")
+
+    def get_members(self):
+        return self.user
+
+    def get_wines(self):
+        return "\n".join([u.name for u in self.wines.all()])
+
+    def get_wine_list(self):
+        all_ratings = map(lambda x: x.name, self.wines.all())
+
+        return all_ratings
