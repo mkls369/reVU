@@ -60,6 +60,7 @@ class Recommendation(models.Model):
         return "\n".join([u.name for u in self.wines.all()])
 
     def get_wine_list(self):
-        all_ratings = map(lambda x: x.name, self.wines.all())
+        wine_ids = Recommendation.objects.filter(user=25).values_list('wines__pk', flat=True)
+        entry_list = Wine.objects.filter(id__in=wine_ids)
 
-        return all_ratings
+        return entry_list
