@@ -1,19 +1,22 @@
 {% extends 'base.html' %}
-
+{% load static %}
+{% load ratings %}
 {% block title %}
+
 <h2>Subject list</h2>
 {% endblock %}
 
+
 {% block content %}
-{% if wine_list %}
+{% if subject_list %}
 <div class="row">
-    {% for wine in wine_list %}
+    {% for subject in subject_list %}
     <div class="col-xs-6 col-lg-4">
-        <h4><a href="{% url 'reviews:wine_detail' wine.id %}">
-        {{ wine.name }}
+        <h4><a href="{% url 'reviews:subject_detail' subject.id %}">
+        {{ subject.name }}
         </a></h4>
-        <h5>{{ wine.review_set.count }} reviews</h5>
-        <h5>{{ wine.average_rating | floatformat }} average rating</h5>
+        {% ratings subject %}
+
     </div>
     {% endfor %}
 </div>

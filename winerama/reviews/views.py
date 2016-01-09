@@ -1,39 +1,29 @@
+# -*- coding: utf-8 -*-
 from django.shortcuts import get_object_or_404, render
 from django.http import HttpResponseRedirect
 from django.core.urlresolvers import reverse
 from django.contrib.auth.models import User
-from .models import Review, Wine, Cluster, Rating,Recommendation
-from .forms import ReviewForm
-from .suggestions import update_clusters
+from .models import  Subject, Rating,Recommendation
 from django.template import RequestContext
-
 
 import datetime
 
 from django.contrib.auth.decorators import login_required
 
 def review_list(request):
-    latest_review_list = Review.objects.order_by('-pub_date')[:9]
+    latest_review_list = Subject.objects.order_by('-id')[:9]
     context = {'latest_review_list':latest_review_list}
     return render(request, 'reviews/review_list.html', context)
 
-
-def review_detail(request, review_id):
-    review = get_object_or_404(Review, pk=review_id)
-    return render(request, 'reviews/review_detail.html', {'review': review})
-
-
-def wine_list(request):
-    wine_list = Wine.objects.order_by('-name')
-    context = {'wine_list':wine_list}
-    return render(request, 'reviews/wine_list.html', context)
+def subject_list(request):
+    subject_list = Subject.objects.order_by('name')
+    context = {'subject_list':subject_list}
+    return render(request, 'reviews/subject_list.html', context)
 
 
-def wine_detail(request, wine_id):
-    wine = get_object_or_404(Wine, pk=wine_id)
-    form = ReviewForm()
-    return render(request, 'reviews/wine_detail.html', {'wine': wine, 'form': form})
-
+def subject_detail(request, subject_id):
+    subject = get_object_or_404(Subject, pk=subject_id)
+    return render(request, 'reviews/subject_detail.html', {'subject': subject})
 
 def user_review_list(request, username=None):
     if not username:
@@ -46,9 +36,9 @@ def user_review_list(request, username=None):
 # @login_required
 # def user_recommendation_list(request):
 #
-#     # get request user reviewed wines
-#     user_reviews = Review.objects.filter(user_name=request.user.username).prefetch_related('wine')
-#     user_reviews_wine_ids = set(map(lambda x: x.wine.id, user_reviews))
+#     # get request user reviewed subjects
+#     user_reviews = Review.objects.filter(user_name=request.user.username).prefetch_related('subject')
+#     user_reviews_subject_ids = set(map(lambda x: x.subject.id, user_reviews))
 #
 #     # get request user cluster name (just the first one righ now)
 #     try:
@@ -65,15 +55,15 @@ def user_review_list(request, username=None):
 #             .exclude(username=request.user.username).all()
 #     other_members_usernames = set(map(lambda x: x.username, user_cluster_other_members))
 #
-#     # get reviews by those users, excluding wines reviewed by the request user
+#     # get reviews by those users, excluding subjects reviewed by the request user
 #     other_users_reviews = \
 #         Review.objects.filter(user_name__in=other_members_usernames) \
-#             .exclude(wine__id__in=user_reviews_wine_ids)
-#     other_users_reviews_wine_ids = set(map(lambda x: x.wine.id, other_users_reviews))
+#             .exclude(subject__id__in=user_reviews_subject_ids)
+#     other_users_reviews_subject_ids = set(map(lambda x: x.subject.id, other_users_reviews))
 #
-#     # then get a wine list including the previous IDs, order by rating
-#     wine_list = sorted(
-#         list(Wine.objects.filter(id__in=other_users_reviews_wine_ids)),
+#     # then get a subject list including the previous IDs, order by rating
+#     subject_list = sorted(
+#         list(subject.objects.filter(id__in=other_users_reviews_subject_ids)),
 #         key=lambda x: x.average_rating,
 #         reverse=True
 #     )
@@ -81,19 +71,19 @@ def user_review_list(request, username=None):
 #     return render(
 #         request,
 #         'reviews/user_recommendation_list.html',
-#         {'username': request.user.username,'wine_list': wine_list}
+#         {'username': request.user.username,'subject_list': subject_list}
 #     )
 
 @login_required
-def add_review(request, wine_id):
-    wine = get_object_or_404(Wine, pk=wine_id)
+def add_review(request, subject_id):
+    subject = get_object_or_404(subject, pk=subject_id)
     form = ReviewForm(request.POST)
     if form.is_valid():
         rating = form.cleaned_data['rating']
         comment = form.cleaned_data['comment']
         user_name = request.user.username
         review = Review()
-        review.wine = wine
+        review.subject = subject
         review.user_name = user_name
         review.rating = rating
         review.comment = comment
@@ -103,15 +93,15 @@ def add_review(request, wine_id):
         # Always return an HttpResponseRedirect after successfully dealing
         # with POST data. This prevents data from being posted twice if a
         # user hits the Back button.
-        return HttpResponseRedirect(reverse('reviews:wine_detail', args=(wine.id,)))
+        return HttpResponseRedirect(reverse('reviews:subject_detail', args=(subject.id,)))
 
-    return render(request, 'reviews/wine_detail.html', {'wine': wine, 'form': form})
+    return render(request, 'reviews/subject_detail.html', {'subject': subject, 'form': form})
 
-def best_wines():
+def best_subjects():
 
     best_w = []
-    best_w = Wine.objects.filter(ratings__isnull=False).order_by('-ratings__average')
-    #best_w = Wine.ratings.get('total')
+    best_w = Subject.objects.filter(ratings__isnull=False).order_by('-ratings__average')
+    #best_w = subject.ratings.get('total')
 
     return best_w
 
@@ -120,10 +110,10 @@ def index(request):
     # Construct a dictionary to pass to the template engine as its context.
     # Note the key boldmessage is the same as {{ boldmessage }} in the template!
 
-    best_w = best_wines()
+    best_w = best_subjects()
 
     #context_dict = {'boldmessage': "I am bold font from the context"}
-    context_dict = {'wines': best_w}
+    context_dict = {'subjects': best_w}
 
     # Return a rendered response to send to the client.
     # We make use of the shortcut function to make our lives easier.
@@ -133,9 +123,9 @@ def index(request):
 
 def recs_for_user(request):
 
-    wine_ids = Recommendation.objects.filter(user=request.user.id).values_list('wines__pk', flat=True)
-    entry_list = Wine.objects.filter(id__in=wine_ids)
+    subject_ids = Recommendation.objects.filter(user=request.user.id).values_list('Subjects__pk', flat=True)
+    entry_list = Subject.objects.filter(id__in=subject_ids)
 
-    context_dict = {'username': request.user.username, 'wine_list': entry_list }
+    context_dict = {'username': request.user.username, 'subject_list': entry_list }
 
     return render(request, 'reviews/user_recommendation_list.html', context_dict)

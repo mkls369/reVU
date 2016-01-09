@@ -15,11 +15,12 @@
 {% load staticfiles %}
     {% load ratings %}
 
-     {% for subject in subjects %}
 
-    <li> {{ subject.name }} {{ subject.get_average }} </li>
-
-    {% endfor %}
+{% for subject in recommended_subjects %}
+    {{ subject.name }}   {{ subject.get_average }}
+{% empty %}
+    No tags!
+{% endfor %}
 
 
 </html>

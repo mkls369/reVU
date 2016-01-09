@@ -1,6 +1,7 @@
 import sys, os 
 import pandas as pd
 
+
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "winerama.settings")
 
 import django
@@ -28,7 +29,7 @@ if __name__ == "__main__":
             axis=1
         )
 
-        print "There are {} subjects".format(subject.objects.count())
+        print "There are {} subjects".format(Subject.objects.count())
         
     else:
         print "Please, provide Subject file path"
