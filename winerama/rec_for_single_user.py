@@ -68,7 +68,6 @@ all_data = users_ratings.merge( ratings, on = 'rating_id')
 all_data_r = all_data.pivot(index='user_id', columns='object_id',
                                    values='score')
 
-
 # fill NANs with 0's
 
 all_data_r = all_data_r.fillna(0)
@@ -78,7 +77,6 @@ data = all_data_r
 # Create a place holder matrix for similarities, and fill in the user name column
 data_sims = pd.DataFrame(index=[1],
                 columns=all_data_r.columns)
-
 
 #end ratings
                 
