@@ -9,19 +9,19 @@
 <div class="container">
     <nav class="navbar navbar-inverse">
         <div class="navbar-header">
-            <a class="navbar-brand" href="{% url 'reviews:review_list' %}">reVU</a>
+            <a class="navbar-brand" >reVU</a>
         </div>
         <div id="navbar" class="navbar-collapse collapse">
             <ul class="nav navbar-nav">
                 <li><a href="{% url 'reviews:subject_list' %}"> <span class="glyphicon glyphicon-list"></span> Subject list </a> </li>
 
-                <li><a href="{% url 'reviews:review_list' %}"> <span class="glyphicon glyphicon-home"></span>
+                <li><a href="{% url 'reviews:index' %}"> <span class="glyphicon glyphicon-home"></span>
                     Home</a></li>
             </ul>
             <ul class="nav navbar-nav navbar-right">
             {% if user.is_authenticated %}
 
-                <li><a href="{% url 'reviews:user_recommendation_list' %}">Hello, {{ user.username }}!</a></li>
+                <li><a href="{% url 'reviews:user_rating_list' %}">Hello, {{ user.username }}!</a></li>
 
 
                 <li><a href="{% url 'reviews:user_recommendation_list' %}">

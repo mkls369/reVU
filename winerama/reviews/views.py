@@ -3,33 +3,31 @@ from django.shortcuts import get_object_or_404, render
 from django.http import HttpResponseRedirect
 from django.core.urlresolvers import reverse
 from django.contrib.auth.models import User
-from .models import  Subject, Rating,Recommendation
+from .models import  Subject, Rating, Recommendation, UserRating
 from django.template import RequestContext
-
+import pandas as pd
 import datetime
 
 from django.contrib.auth.decorators import login_required
-
-def review_list(request):
-    latest_review_list = Subject.objects.order_by('-id')[:9]
-    context = {'latest_review_list':latest_review_list}
-    return render(request, 'reviews/review_list.html', context)
 
 def subject_list(request):
     subject_list = Subject.objects.order_by('name')
     context = {'subject_list':subject_list}
     return render(request, 'reviews/subject_list.html', context)
 
-
 def subject_detail(request, subject_id):
     subject = get_object_or_404(Subject, pk=subject_id)
     return render(request, 'reviews/subject_detail.html', {'subject': subject})
 
-def user_review_list(request, username=None):
+def user_rating_list(request, username=None):
     if not username:
         username = request.user.username
-    latest_review_list = Review.objects.filter(user_name=username).order_by('-pub_date')
-    context = {'latest_review_list':latest_review_list, 'username':username}
+
+    rating_ids = pd.DataFrame(list(UserRating.objects.filter(user=request.user.id).values()))['rating_id']
+    objects_ids = pd.DataFrame(list(Rating.objects.filter(id__in = rating_ids).values()))['object_id']
+    subject_list = Subject.objects.filter(id__in = objects_ids)
+
+    context = {'subject_list':subject_list, 'username':username}
     return render(request, 'reviews/user_review_list.html', context)
 
 
@@ -74,29 +72,6 @@ def user_review_list(request, username=None):
 #         {'username': request.user.username,'subject_list': subject_list}
 #     )
 
-@login_required
-def add_review(request, subject_id):
-    subject = get_object_or_404(subject, pk=subject_id)
-    form = ReviewForm(request.POST)
-    if form.is_valid():
-        rating = form.cleaned_data['rating']
-        comment = form.cleaned_data['comment']
-        user_name = request.user.username
-        review = Review()
-        review.subject = subject
-        review.user_name = user_name
-        review.rating = rating
-        review.comment = comment
-        review.pub_date = datetime.datetime.now()
-        review.save()
-        update_clusters()
-        # Always return an HttpResponseRedirect after successfully dealing
-        # with POST data. This prevents data from being posted twice if a
-        # user hits the Back button.
-        return HttpResponseRedirect(reverse('reviews:subject_detail', args=(subject.id,)))
-
-    return render(request, 'reviews/subject_detail.html', {'subject': subject, 'form': form})
-
 def best_subjects():
 
     best_w = []
@@ -105,15 +80,18 @@ def best_subjects():
 
     return best_w
 
-def index(request):
+def index(request, username=None):
     # context = RequestContext(request)
     # Construct a dictionary to pass to the template engine as its context.
     # Note the key boldmessage is the same as {{ boldmessage }} in the template!
 
     best_w = best_subjects()
 
+    if not username:
+        username = request.user.username
+
     #context_dict = {'boldmessage': "I am bold font from the context"}
-    context_dict = {'subjects': best_w}
+    context_dict = {'subjects': best_w, 'username':username}
 
     # Return a rendered response to send to the client.
     # We make use of the shortcut function to make our lives easier.

@@ -1,25 +1,11 @@
-<!DOCTYPE html>
-<html>
+{% extends 'base.html' %}
+{% load ratings %}
+{% block title %}
 
-    <head>
-        <title>Rango</title>
-        <script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
-    </head>
+{% if user.is_authenticated %}
 
-    <body>
-        <h1>Test page</h1> <strong> {{ boldmessage }}</strong><br />
-        <a href="/reviews/">To main page</a><br />
-    </body>
-
-
-{% load staticfiles %}
-    {% load ratings %}
-
-     {% for subject in subjects %}
-
-    <li> {{ subject.name }} {{ subject.get_average }} </li>
-
-    {% endfor %}
-
-
-</html>
+<h3>{{username}}, Welcome to reVU</h3>
+{% else %}
+<h3>Welcome to reVU, please register or login to start rating</h3>
+{% endif %}
+{% endblock %}

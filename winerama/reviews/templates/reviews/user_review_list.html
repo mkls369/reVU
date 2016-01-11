@@ -1,9 +1,8 @@
-{% extends 'reviews/review_list.html' %}
-
+{% extends 'reviews/subject_list.html' %}
+{% load ratings %}
 {% block title %}
 
 
-<h2>Reviews by {{ username }}</h2>
-
+<h3> {{ username }}, you have rated the following subjects. You may change you ratings at any time.</h3>
 
 {% endblock %}
