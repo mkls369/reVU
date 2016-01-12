@@ -52,7 +52,7 @@ data_neighbours.head(6).iloc[:6,]
 
 # Helper function to get similarity scores
 def getScore(history, similarities):
-   return sum(history*similarities)/sum(similarities)
+   return sum(history*similarities.values)/sum(similarities)
 
 
 #addratings
@@ -82,7 +82,7 @@ data_sims = pd.DataFrame(index=[1],
                 
 #Loop through all rows, skip the user column, and fill with similarity scores
 
-for j in range(1,len(data_sims.columns)):
+for j in range(0,len(data_sims.columns)):
     user = data_sims.index[0]
     product = data_sims.columns[j]
 
@@ -91,9 +91,11 @@ for j in range(1,len(data_sims.columns)):
 
     else:
         product_top_names = data_neighbours.ix[product+1][1:6]
-        product_top_sims = sim_matrix.ix[product].order(ascending=False)[2:7]
+        product_top_sims = sim_matrix.ix[product].sort_values(ascending=False)[2:7]
         user_purchases = data.ix[user,product_top_names]
 
+        #data_sims.iloc[0,j] = getScore(user_purchases,product_top_sims)
+                
         data_sims.iloc[0,j] = getScore(user_purchases,product_top_sims)
 
 # Get the top-3 subjects
@@ -106,7 +108,7 @@ data_recommend['user_id'] = data_recommend.index
 # Instead of top song scores, we want to see IDs
 for i in range(0,len(data_sims.index)):
     data_recommend.iloc[i,1:] = \
-    data_sims.iloc[i,:].order(ascending=False).iloc[1:4,].index.transpose()
+    data_sims.iloc[i,:].sort_values(ascending=False).iloc[1:4,].index.transpose()
 
 # Translate IDs to Names
 
