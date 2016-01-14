@@ -7,6 +7,7 @@ from .models import  Subject, Rating, Recommendation, UserRating
 from django.template import RequestContext
 import pandas as pd
 import datetime
+from .recommend import update_recommendation
 
 from django.contrib.auth.decorators import login_required
 
@@ -103,6 +104,7 @@ def recs_for_user(request):
 
     subject_ids = Recommendation.objects.filter(user=request.user.id).values_list('Subjects__pk', flat=True)
     entry_list = Subject.objects.filter(id__in=subject_ids)
+    update_recommendation()
 
     context_dict = {'username': request.user.username, 'subject_list': entry_list }
 

@@ -18,12 +18,13 @@ import django
 
 django.setup()
 
-from reviews.models import UserRating, Rating, Recommendation, Subject
+from reviews.models import UserRating, Rating, Recommendation, Subjects, Subject
 from django.contrib.auth.models import User
 import numpy as np
 import pandas as pd
 from scipy.spatial.distance import cosine
 import datetime
+from compiler.ast import flatten
 
 from django.template import RequestContext
 
@@ -103,14 +104,9 @@ for j in range(0,len(data_sims.columns)):
         data_sims.iloc[0,j] = getScore(user_purchases,product_top_sims)
 
 ## subjects to recommend
-
-from compiler.ast import flatten
-
 subs_to_rec = 3
 
 column_names = flatten(['user_id', map(str, range(1,subs_to_rec+1) ) ])
-
-[y for x in column_names for y in x]
 
 # Get the top-3 subjects
 data_recommend = pd.DataFrame(index=data_sims.index,
@@ -123,17 +119,30 @@ data_recommend['user_id'] = user_used
 data_recommend.iloc[0,1:subs_to_rec+1] = \
 data_sims.iloc[0].sort_values(ascending=False).iloc[0:subs_to_rec].index.transpose()
 
+# Update Recommendation
+Recommendation.objects.filter(user = user_used).delete()
+
+new_rec = Recommendation(user_id = user_used)
+
+new_rec.save()
+
+for i in range(1, subs_to_rec+1):
+
+    new_rec.Subjects.add(Subject.objects.get(id =data_recommend.iloc[0,i] ) )
+
+#new_rec.Subjects.add(Subject.objects.filter(id__in=data_recommend.iloc[0,1:subs_to_rec+1]))
+
 # Translate IDs to Names
 
-data_recommend_fn = pd.melt(data_recommend, id_vars=['user_id'])
-
-subjects_names = pd.DataFrame(index=data_sims.index,
-                              columns=['1','2','3'])
-
-for i in range(0,len(subjects_names)):
-    subjects_names.iloc
-# Print a sample
-print data_recommend
-
-data_recommend
+#data_recommend_fn = pd.melt(data_recommend, id_vars=['user_id'])
+#
+#subjects_names = pd.DataFrame(index=data_sims.index,
+#                              columns=['1','2','3'])
+#
+#for i in range(0,len(subjects_names)):
+#    subjects_names.iloc
+## Print a sample
+#print data_recommend
+#
+#data_recommend
 #end
