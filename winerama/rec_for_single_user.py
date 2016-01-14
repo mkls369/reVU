@@ -43,7 +43,7 @@ data_neighbours = pd.DataFrame(index=sim_matrix.columns,
 
 for i in range(0,len(sim_matrix.columns)):
     data_neighbours.iloc[i,:no__neighbours] = \
-    sim_matrix.iloc[0:,i].sort_values(ascending=False)[:no__neighbours].index
+    sim_matrix.iloc[0:,i].order(ascending=False)[:no__neighbours].index
 
 data_neighbours = data_neighbours.drop(0, 1)
 
@@ -95,7 +95,7 @@ for j in range(0,len(data_sims.columns)):
         product_top_names = data_neighbours.loc[str(product)]
         
         product_top_sims = sim_matrix.ix[product].drop(['object_id',str(product)]) \
-        .sort_values(ascending=False)[0:no__neighbours-1]
+        .order(ascending=False)[0:no__neighbours-1]
         
         user_purchases = data.ix[user_used,product_top_names]
 
@@ -117,7 +117,7 @@ data_recommend['user_id'] = user_used
 
 # Instead of top song scores, we want to see IDs
 data_recommend.iloc[0,1:subs_to_rec+1] = \
-data_sims.iloc[0].sort_values(ascending=False).iloc[0:subs_to_rec].index.transpose()
+data_sims.iloc[0].order(ascending=False).iloc[0:subs_to_rec].index.transpose()
 
 # Update Recommendation
 Recommendation.objects.filter(user = user_used).delete()
