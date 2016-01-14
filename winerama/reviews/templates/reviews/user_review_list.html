@@ -2,7 +2,12 @@
 {% load ratings %}
 {% block title %}
 
+{% if subject_list %}
+	<h3> {{ username }}, you have rated the following subjects. You may change you ratings at any time.</h3>
+{% else%}
 
-<h3> {{ username }}, you have rated the following subjects. You may change you ratings at any time.</h3>
+	<h3>{{ username }}, you have not rated anything.</h3>
+	
+{%endif%}
 
 {% endblock %}

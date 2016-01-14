@@ -13,7 +13,8 @@ import datetime
 from compiler.ast import flatten
 from django.template import RequestContext
 
-def update_recommendation():
+
+def update_recommendation(user_id):
 
     sim_matrix = pd.read_csv("data/sim_matrix.csv")
     
@@ -42,7 +43,7 @@ def update_recommendation():
     
     
     #addratings #test user = 101
-    user_used = 101
+    user_used = user_id
     
     users_ratings = pd.DataFrame(list(UserRating.objects.filter(user=user_used).values()))
     

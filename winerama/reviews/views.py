@@ -24,10 +24,14 @@ def user_rating_list(request, username=None):
     if not username:
         username = request.user.username
 
-    rating_ids = pd.DataFrame(list(UserRating.objects.filter(user=request.user.id).values()))['rating_id']
-    objects_ids = pd.DataFrame(list(Rating.objects.filter(id__in = rating_ids).values()))['object_id']
-    subject_list = Subject.objects.filter(id__in = objects_ids)
-
+    rating = pd.DataFrame(list(UserRating.objects.filter(user=request.user.id).values()))
+    
+    if len(rating)  > 0:
+        rating_ids = rating['rating_id']
+        objects_ids = pd.DataFrame(list(Rating.objects.filter(id__in = rating_ids).values()))['object_id']
+        subject_list = Subject.objects.filter(id__in = objects_ids)
+    else:
+	    subject_list = Subject.objects.none()
     context = {'subject_list':subject_list, 'username':username}
     return render(request, 'reviews/user_review_list.html', context)
 
@@ -102,9 +106,15 @@ def index(request, username=None):
 
 def recs_for_user(request):
 
-    subject_ids = Recommendation.objects.filter(user=request.user.id).values_list('Subjects__pk', flat=True)
-    entry_list = Subject.objects.filter(id__in=subject_ids)
-    update_recommendation()
+    user_id = request.user.id
+	
+    if len(UserRating.objects.filter(user=request.user.id)) > 0:
+	
+        subject_ids = Recommendation.objects.filter(user=request.user.id).values_list('Subjects__pk', flat=True)
+        entry_list = Subject.objects.filter(id__in=subject_ids)
+        update_recommendation(user_id)
+    else:
+	entry_list = Subject.objects.none()
 
     context_dict = {'username': request.user.username, 'subject_list': entry_list }
 
